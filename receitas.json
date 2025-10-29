@@ -1,0 +1,18 @@
+[
+  {
+    "nome": "Macarrão à Bolonhesa",
+    "ingredientes": ["macarrão", "carne moída", "molho de tomate", "cebola", "alho"]
+  },
+  {
+    "nome": "Frango Grelhado com Arroz",
+    "ingredientes": ["frango", "arroz", "azeite", "sal", "alho"]
+  },
+  {
+    "nome": "Omelete de Legumes",
+    "ingredientes": ["ovo", "cenoura", "pimentão", "cebola", "sal"]
+  },
+  {
+    "nome": "Sopa de Legumes",
+    "ingredientes": ["batata", "cenoura", "mandioca", "água", "sal"]
+  }
+]

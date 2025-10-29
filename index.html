@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Cardápio Semanal 🍽️</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      text-align: center;
+      padding: 30px;
+      color: #333;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    button {
+      margin: 8px;
+      padding: 12px 20px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #conteudo {
+      text-align: left;
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: 30px auto;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+    #botoes {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍽️ Gerador de Cardápio Semanal</h1>
+  <button onclick="gerarCardapio()">🔮 Gerar Cardápio da Semana</button>
+
+  <div id="botoes">
+    <h3>📅 Ver Receitas e Lista:</h3>
+    <button onclick="abrirArquivo('segunda.txt')">Segunda</button>
+    <button onclick="abrirArquivo('terca.txt')">Terça</button>
+    <button onclick="abrirArquivo('quarta.txt')">Quarta</button>
+    <button onclick="abrirArquivo('quinta.txt')">Quinta</button>
+    <button onclick="abrirArquivo('sexta.txt')">Sexta</button>
+    <button onclick="abrirArquivo('sabado.txt')">Sábado</button>
+    <button onclick="abrirArquivo('domingo.txt')">Domingo</button>
+    <button onclick="abrirArquivo('lista_compras.txt')">🛒 Lista de Compras</button>
+  </div>
+
+  <div id="conteudo">Clique em "Gerar Cardápio da Semana" para começar.</div>
+
+  <script>
+    // Chama a main.py para gerar cardápio e arquivos .txt
+    async function gerarCardapio() {
+      const conteudo = document.getElementById("conteudo");
+      conteudo.textContent = "Gerando cardápio... aguarde ⏳";
+
+      try {
+        const resposta = await fetch("/gerar"); // rota da main.py
+        const dados = await resposta.json();
+        conteudo.textContent = dados.mensagem || "✅ Cardápio gerado com sucesso!";
+      } catch (erro) {
+        conteudo.textContent = "⚠️ Erro ao gerar cardápio: " + erro;
+      }
+    }
+
+    // Lê os arquivos .txt gerados pela main.py dentro da pasta "receitas"
+    async function abrirArquivo(nome) {
+      const conteudo = document.getElementById("conteudo");
+      conteudo.textContent = "Carregando " + nome + "...";
+      try {
+        const resposta = await fetch("/arquivos/" + nome);
+        if (!resposta.ok) throw new Error("Arquivo não encontrado");
+        const texto = await resposta.text();
+        conteudo.textContent = texto;
+      } catch (erro) {
+        conteudo.textContent = "⚠️ Erro ao carregar arquivo: " + erro;
+      }
+    }
+  </script>
+</body>
+</html>
