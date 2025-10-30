@@ -1,0 +1,52 @@
+# ==========================================
+# LISTAS DE INGREDIENTES PARA TESTES DO CARDÁPIO
+# ==========================================
+
+# 🍽️ Lista 1 — Básica de casa brasileira
+# Objetivo: testar receitas tradicionais simples (tipo arroz com feijão, macarronada, frango com batata)
+arroz, feijão, macarrão, carne moída, frango, batata, cebola, alho, tomate, óleo, sal, pimenta
+
+
+# 🌱 Lista 2 — Vegetariana leve
+# Objetivo: ver se a IA monta pratos vegetarianos variados e equilibrados
+abobrinha, berinjela, cenoura, brócolis, espinafre, batata-doce, tomate, cebola, alho, azeite, grão-de-bico, lentilha, arroz integral
+
+
+# 🐟 Lista 3 — Foco em frutos do mar
+# Objetivo: testar se o modelo entende bem cardápios com frutos do mar e cria preparos variados (moqueca, risoto, ensopado)
+tilápia, camarão, lula, arroz, limão, alho, cebola, pimentão, azeite, coentro, tomate, batata
+
+
+# 🍗 Lista 4 — Refeições rápidas de fim de semana
+# Objetivo: gerar cardápios simples tipo sanduíches, omeletes, wraps e lanches rápidos
+pão, queijo, presunto, ovo, tomate, alface, batata frita, maionese, frango desfiado, milho, orégano
+
+
+# 🍲 Lista 5 — Foco fitness (alta proteína, pouca gordura)
+# Objetivo: testar se o modelo cria receitas balanceadas (frango grelhado, omelete proteico, saladas ricas em proteína)
+peito de frango, ovos, batata-doce, brócolis, arroz integral, azeite, espinafre, cenoura, quinoa
+
+
+# 🍝 Lista 6 — Italiana (massa e molho)
+# Objetivo: forçar o modelo a trabalhar com um tema específico e manter coerência nos pratos
+macarrão, tomate, manjericão, queijo parmesão, azeite, alho, cebola, carne moída, vinho tinto
+
+
+# 🥩 Lista 7 — Churrasco e acompanhamentos
+# Objetivo: testar como o modelo adapta ingredientes de churrasco para um cardápio completo
+picanha, linguiça, frango, mandioca, farofa, arroz, vinagrete, pão de alho, queijo coalho
+
+
+# 🥗 Lista 8 — Vegana prática
+# Objetivo: avaliar se o modelo gera pratos 100% vegetais sem usar produtos animais
+tofu, lentilha, grão-de-bico, quinoa, espinafre, cenoura, batata, abóbora, azeite, alho, cebola
+
+
+# 🍳 Lista 9 — Café da manhã reforçado
+# Objetivo: ver se o modelo gera refeições leves e equilibradas para o início do dia
+ovos, pão integral, banana, aveia, leite, mel, café, manteiga, queijo, mamão
+
+
+# 🍔 Lista 10 — Ingredientes urbanos e baratos
+# Objetivo: avaliar se o modelo consegue criar pratos econômicos e variados
+arroz, sardinha enlatada, ovo, cebola, alho, macarrão, molho de tomate, salsicha, batata, óleo

@@ -1,0 +1,88 @@
+```json
+{
+  "Segunda": [
+    {
+      "nome": "Frango Grelhado com Arroz e Vinagrete",
+      "ingredientes": ["frango", "arroz", "vinagrete", "sal", "óleo"],
+      "modo_preparo": "Tempere o frango com sal e grelhe em uma frigideira com um fio de óleo até dourar. Cozinhe o arroz. Sirva o frango grelhado com arroz branco e uma porção de vinagrete."
+    },
+    {
+      "nome": "Linguiça Acebolada com Mandioca Cozida",
+      "ingredientes": ["linguiça", "mandioca", "cebola", "alho", "óleo", "sal"],
+      "modo_preparo": "Cozinhe a mandioca em água com sal até ficar macia. Fatie a linguiça e refogue em uma panela com um pouco de óleo, adicione cebola fatiada e alho picado, refogando até a linguiça dourar e a cebola ficar translúcida. Sirva a linguiça sobre a mandioca cozida."
+    }
+  ],
+  "Terca": [
+    {
+      "nome": "Frango Desfiado com Mandioca Frita",
+      "ingredientes": ["frango", "mandioca", "óleo", "sal", "alho", "cebola"],
+      "modo_preparo": "Cozinhe o frango, desfie e reserve. Cozinhe a mandioca, corte em pedaços e frite em óleo quente até dourar. Refogue o frango desfiado com alho picado e cebola em cubos. Sirva o frango desfiado com a mandioca frita."
+    },
+    {
+      "nome": "Arroz Caldoso com Queijo Coalho Grelhado",
+      "ingredientes": ["arroz", "queijo coalho", "cebola", "alho", "óleo", "sal"],
+      "modo_preparo": "Refogue cebola e alho no óleo, adicione o arroz e água (cerca de 3 xícaras para 1 de arroz) e cozinhe até ficar um arroz mais caldoso. Grelhe fatias de queijo coalho em uma frigideira. Sirva o queijo coalho sobre o arroz."
+    }
+  ],
+  "Quarta": [
+    {
+      "nome": "Linguiça na Chapa com Farofa e Vinagrete",
+      "ingredientes": ["linguiça", "farofa", "vinagrete", "óleo"],
+      "modo_preparo": "Frite a linguiça fatiada em uma chapa ou frigideira com um pouco de óleo até ficar bem dourada. Aqueça a farofa em outra frigideira. Sirva a linguiça com a farofa e o vinagrete."
+    },
+    {
+      "nome": "Pão de Alho Assado com Queijo Coalho",
+      "ingredientes": ["pão de alho", "queijo coalho"],
+      "modo_preparo": "Asse o pão de alho no forno ou na airfryer conforme as instruções da embalagem. Grelhe ou asse fatias de queijo coalho até ficarem macias e levemente douradas. Sirva o pão de alho acompanhado do queijo coalho."
+    }
+  ],
+  "Quinta": [
+    {
+      "nome": "Frango Assado com Arroz e Vinagrete",
+      "ingredientes": ["frango", "arroz", "vinagrete", "sal", "óleo", "alho", "cebola"],
+      "modo_preparo": "Tempere o frango com sal, alho e cebola picados. Asse em forno pré-aquecido até ficar dourado e cozido por dentro. Cozinhe o arroz. Sirva o frango assado com arroz e vinagrete."
+    },
+    {
+      "nome": "Purê de Mandioca com Linguiça Refogada",
+      "ingredientes": ["mandioca", "linguiça", "cebola", "alho", "óleo", "sal"],
+      "modo_preparo": "Cozinhe a mandioca em água com sal até ficar bem macia, escorra e amasse até obter um purê, adicionando um pouco da água do cozimento, sal e um fio de óleo se necessário. Refogue a linguiça picada com cebola e alho até dourar. Sirva o purê de mandioca com a linguiça refogada por cima."
+    }
+  ],
+  "Sexta": [
+    {
+      "nome": "Salada de Frango com Mandioca Cozida e Vinagrete",
+      "ingredientes": ["frango", "mandioca", "vinagrete", "sal", "óleo"],
+      "modo_preparo": "Cozinhe o frango e desfie. Cozinhe a mandioca e corte em cubos pequenos. Em uma tigela, misture o frango desfiado, os cubos de mandioca e o vinagrete. Sirva frio ou morno."
+    },
+    {
+      "nome": "Linguiça Grelhada com Queijo Coalho e Farofa",
+      "ingredientes": ["linguiça", "queijo coalho", "farofa", "óleo"],
+      "modo_preparo": "Grelhe as linguiças inteiras ou em rodelas até ficarem douradas e cozidas. Grelhe também fatias de queijo coalho. Aqueça a farofa. Sirva a linguiça e o queijo coalho grelhados com a farofa."
+    }
+  ],
+  "Sabado": [
+    {
+      "nome": "Picanha na Chapa com Arroz e Farofa",
+      "ingredientes": ["picanha", "arroz", "farofa", "sal", "óleo"],
+      "modo_preparo": "Fatie a picanha e tempere com sal. Grelhe na chapa ou frigideira com um pouco de óleo no ponto desejado. Cozinhe o arroz. Aqueça a farofa. Sirva a picanha fatiada com arroz e farofa."
+    },
+    {
+      "nome": "Mandioca Frita com Queijo Coalho Grelhado e Pão de Alho",
+      "ingredientes": ["mandioca", "queijo coalho", "pão de alho", "óleo", "sal"],
+      "modo_preparo": "Cozinhe a mandioca, corte em palitos e frite em óleo quente até dourar. Grelhe o queijo coalho em fatias. Aqueça o pão de alho no forno ou airfryer. Sirva como um petisco."
+    }
+  ],
+  "Domingo": [
+    {
+      "nome": "Churrasquinho de Picanha e Linguiça com Pão de Alho",
+      "ingredientes": ["picanha", "linguiça", "pão de alho", "sal", "óleo"],
+      "modo_preparo": "Corte a picanha em cubos ou bifes e a linguiça em pedaços. Tempere a picanha com sal. Grelhe a picanha e a linguiça em uma churrasqueira ou chapa. Asse o pão de alho. Sirva os espetinhos com pão de alho."
+    },
+    {
+      "nome": "Arroz Carreteiro Simplificado (com linguiça)",
+      "ingredientes": ["arroz", "linguiça", "cebola", "alho", "óleo", "sal"],
+      "modo_preparo": "Pique a linguiça e refogue em uma panela com um pouco de óleo até dourar. Adicione cebola e alho picados, refogue. Acrescente o arroz e misture bem. Adicione água quente (2 xícaras para 1 de arroz) e sal, cozinhe até a água secar e o arroz ficar macio. Sirva."
+    }
+  ]
+}
+```
