@@ -2,7 +2,6 @@
 GERADOR DE CARDÁPIO SEMANAL POR INGREDIENTES
 ===============================================================
 
-Autor: [Seu Nome]
 Versão: 1.0
 Linguagem: Python 3.9+
 Modelo de IA: Gemini (via biblioteca google-genai)
