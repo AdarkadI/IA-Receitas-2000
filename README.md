@@ -1,109 +1,153 @@
-
 GERADOR DE CARDÁPIO SEMANAL POR INGREDIENTES
 ===============================================================
 
-Versão: 1.0
-Linguagem: Python 3.9+
+Versão: 2.0
+
+Linguagem: Python 3.9+ (back-end) / JavaScript (front-end React)
+
 Modelo de IA: Gemini (via biblioteca google-genai)
 
 ---------------------------------------------------------------
 DESCRIÇÃO DO PROJETO
 ---------------------------------------------------------------
 
-Este programa utiliza a API Gemini para gerar automaticamente um
-cardápio semanal (de segunda a domingo) com almoço e jantar,
-baseando-se nos ingredientes que o usuário tem em casa.
+Este projeto é um sistema completo que gera automaticamente um
+CARDÁPIO SEMANAL (segunda a domingo) com almoço e jantar, usando
+a API Gemini e uma interface web simples em React.
 
-A ideia é simples: você informa os ingredientes disponíveis e a
-inteligência artificial cria receitas realistas, caseiras e
-variadas, priorizando o uso desses itens.
+O usuário informa os ingredientes disponíveis em casa e o sistema
+cria receitas variadas, realistas e caseiras, priorizando o uso
+dos ingredientes informados.
 
-Os resultados são salvos em formato JSON e também em arquivos TXT,
-um para cada dia da semana, dentro da pasta "cardapio_semana".
+O back-end em Python se comunica com o modelo Gemini, processa a
+resposta e retorna o cardápio em formato JSON para o front-end.
 
 ---------------------------------------------------------------
 FUNCIONALIDADES
 ---------------------------------------------------------------
 
-- Entrada interativa dos ingredientes (exemplo: "arroz, frango, batata").
+- Interface web para entrada de ingredientes.
 - Opção para permitir o uso de ingredientes extras básicos
   (sal, óleo, alho, cebola).
-- Geração de cardápio semanal completo (almoço e jantar).
-- Salvamento automático dos resultados em:
-      cardapio_semana/cardapio_final.json
-      cardapio_semana/<dia>.txt
-- Validação de formato JSON para garantir consistência.
-- Repetição automática de tentativas na comunicação com a API
-  (com tempo de espera crescente entre as tentativas).
+- Geração automática de cardápio semanal (almoço e jantar).
+- Resposta estruturada em formato JSON.
+- Validação de estrutura (JSON Schema) para garantir formato
+  consistente das respostas da IA.
+- Comunicação entre front-end (React) e back-end (Flask) via API REST.
+- Tentativas automáticas de reconexão à API Gemini em caso de falhas.
 
 ---------------------------------------------------------------
-EXEMPLO DE EXECUÇÃO
+CONFIGURAÇÃO DA API GEMINI
 ---------------------------------------------------------------
 
-> python cardapio_por_ingredientes_sem_lista.py
-
-Saída esperada:
-
-=== Gerador de cardápio por ingredientes ===
-Digite os ingredientes que você tem em casa (separe por vírgula):
-> arroz, feijão, frango, batata, cenoura
-
-Posso usar extras básicos (sal, óleo, alho, cebola)? [s/N]:
-> s
-
-Enviando dados à API...
-
-✅ Resposta bruta salva em: cardapio_semana/cardapio_raw.txt
-
-✅ Cardápio JSON salvo em: cardapio_semana/cardapio_final.json
-
-✅ Arquivo salvo: cardapio_semana/segunda.txt
-
-✅ Arquivo salvo: cardapio_semana/terca.txt
-
-...
-
-🎉 Cardápio gerado com sucesso! Confira a pasta 'cardapio_semana'.
-
----------------------------------------------------------------
-CONFIGURAÇÃO DA API
----------------------------------------------------------------
-
-1. Crie um arquivo .env na raiz do projeto com o conteúdo:
+1. Crie um arquivo .env dentro da pasta backend com o conteúdo:
 
    GEMINI_API_KEY=SEU_TOKEN_AQUI
 
-2. Certifique-se de possuir uma chave de API Gemini válida.
+2. Certifique-se de ter uma chave de API válida para o modelo Gemini.
 
 ---------------------------------------------------------------
-INSTALAÇÃO DE DEPENDÊNCIAS
+INSTALAÇÃO DO BACK-END (Flask)
 ---------------------------------------------------------------
 
-Crie um ambiente virtual e instale os pacotes necessários:
+1. Acesse a pasta "backend":
+       cd backend
 
-Windows:
-    python -m venv .venv
-    .venv\Scripts\activate
-    pip install --upgrade pip
-    pip install google-genai python-dotenv jsonschema
+2. Crie um ambiente virtual e instale as dependências:
 
-Linux/Mac:
-    python3 -m venv .venv
-    source .venv/bin/activate
-    pip install --upgrade pip
-    pip install google-genai python-dotenv jsonschema
+   Windows:
+       python -m venv .venv
+       .venv\Scripts\activate
+       pip install --upgrade pip
+       pip install flask flask-cors google-genai python-dotenv jsonschema
+
+   Linux/Mac:
+       python3 -m venv .venv
+       source .venv/bin/activate
+       pip install --upgrade pip
+       pip install flask flask-cors google-genai python-dotenv jsonschema
+
+3. Inicie o servidor:
+       python app.py
+
+O servidor rodará em http://localhost:5000
+
+---------------------------------------------------------------
+INSTALAÇÃO DO FRONT-END (React)
+---------------------------------------------------------------
+
+1. Acesse a pasta "frontend":
+       cd frontend
+
+2. Instale as dependências:
+       npm install
+       npm install axios
+
+3. Inicie o servidor de desenvolvimento:
+       npm run dev
+
+O front-end abrirá em http://localhost:5173 (ou porta similar).
+
+---------------------------------------------------------------
+COMO USAR
+---------------------------------------------------------------
+
+1. Abra o front-end no navegador (ex: http://localhost:5173).
+2. Digite os ingredientes disponíveis, separados por vírgula.
+   Exemplo:
+       arroz, frango, batata, feijão
+3. Marque a opção "Permitir extras básicos" se desejar.
+4. Clique em "Gerar cardápio".
+5. Aguarde alguns segundos enquanto o modelo Gemini cria o cardápio.
+6. O resultado (almoço e jantar de cada dia) aparecerá na tela.
+
+---------------------------------------------------------------
+FORMATO DA REQUISIÇÃO E RESPOSTA
+---------------------------------------------------------------
+
+POST /gerar-cardapio
+Content-Type: application/json
+
+Corpo:
+{
+    "ingredientes": "arroz, frango, batata",
+    "permitir_extras": true
+}
+
+Resposta:
+{
+    "Segunda": [
+        {
+            "nome": "Frango assado com batata",
+            "ingredientes": ["frango", "batata", "sal"],
+            "modo_preparo": "Asse o frango com as batatas até dourar."
+        },
+        {
+            "nome": "Arroz com legumes",
+            "ingredientes": ["arroz", "cenoura", "óleo"],
+            "modo_preparo": "Refogue e cozinhe normalmente."
+        }
+    ],
+    ...
+}
 
 ---------------------------------------------------------------
 DETALHES TÉCNICOS
 ---------------------------------------------------------------
 
-- O script valida a estrutura das respostas da IA com a biblioteca
-  "jsonschema" para garantir o formato correto.
+- O back-end usa Flask e Flask-CORS para aceitar conexões do front-end.
+- A função gerar_com_retry() faz tentativas automáticas com tempo de
+  espera crescente entre falhas (backoff exponencial).
+- O schema de validação garante que o modelo Gemini responda sempre
+  com os campos obrigatórios: nome, ingredientes, modo_preparo.
+- O cardápio é salvo em JSON dentro de /backend/cardapio_semana/.
 
-- A função gerar_com_retry() realiza múltiplas tentativas com
-  tempo de espera progressivo, para evitar falhas de rede temporárias.
+---------------------------------------------------------------
+DICAS DE USO
+---------------------------------------------------------------
 
-- A resposta bruta da IA é salva antes da conversão em JSON,
-  no arquivo cardapio_semana/cardapio_raw.txt, para facilitar depuração.
-
-===============================================================
+- Quanto mais específicos forem os ingredientes, melhor o resultado.
+- Se o modelo gerar texto não estruturado, verifique o arquivo
+  "cardapio_semana/cardapio_raw.txt" para depurar.
+- É possível ajustar o modelo usado (ex: gemini-2.0-pro) no código
+  do back-end se desejar respostas mais criativas.
