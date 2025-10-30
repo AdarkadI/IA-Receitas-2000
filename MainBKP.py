@@ -1,5 +1,13 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+"""
+cardapio_por_ingredientes_sem_lista.py
+
+Fluxo:
+1) Usuário informa os ingredientes disponíveis.
+2) O modelo Gemini gera um cardápio semanal (segunda a domingo)
+   com almoço e jantar, utilizando preferencialmente esses ingredientes.
+3) O programa salva os arquivos de saída (JSON e TXT).
+"""
+
 import os
 import re
 import time
@@ -9,7 +17,7 @@ from jsonschema import validate, ValidationError
 from google import genai
 
 # ===========================================================
-# CONFIGURAÇÃO BÁSICA
+# CONFIGURAÇÃO E SCHEMA DE VALIDAÇÃO
 # ===========================================================
 
 load_dotenv()
@@ -19,13 +27,7 @@ if not API_KEY:
 
 client = genai.Client(api_key=API_KEY)
 
-app = Flask(__name__)
-CORS(app)  # Permite acesso do front-end (React)
-
-# ===========================================================
-# SCHEMAS DE VALIDAÇÃO
-# ===========================================================
-
+# Estrutura esperada de cada receita
 RECEITA_SCHEMA = {
     "type": "object",
     "required": ["nome", "ingredientes", "modo_preparo"],
@@ -37,6 +39,7 @@ RECEITA_SCHEMA = {
     "additionalProperties": True
 }
 
+# Estrutura esperada do cardápio semanal
 CARDAPIO_SCHEMA = {
     "type": "object",
     "properties": {
@@ -56,7 +59,7 @@ CARDAPIO_SCHEMA = {
 # ===========================================================
 
 def limpar_json(texto: str) -> str:
-    """Remove cercas de código e formatação extra."""
+    """Remove cercas de código (```json) e espaços extras da resposta da IA."""
     if not isinstance(texto, str):
         return ""
     texto = texto.strip()
@@ -66,7 +69,7 @@ def limpar_json(texto: str) -> str:
     return texto.strip()
 
 def parse_json_seguro(texto: str):
-    """Converte a resposta em JSON válido, se possível."""
+    """Converte resposta para JSON e mostra o conteúdo em caso de falha."""
     texto = limpar_json(texto)
     try:
         return json.loads(texto)
@@ -76,7 +79,7 @@ def parse_json_seguro(texto: str):
         return None
 
 def validar_receita_obj(obj: dict) -> bool:
-    """Valida formato de receita individual."""
+    """Confere se o objeto segue o formato mínimo de uma receita."""
     try:
         validate(instance=obj, schema=RECEITA_SCHEMA)
         return True
@@ -85,7 +88,7 @@ def validar_receita_obj(obj: dict) -> bool:
         return False
 
 def validar_cardapio_semana(obj: dict) -> bool:
-    """Valida o cardápio completo."""
+    """Confere se o cardápio contém dias e receitas válidas."""
     try:
         validate(instance=obj, schema=CARDAPIO_SCHEMA)
     except ValidationError as e:
@@ -102,8 +105,12 @@ def validar_cardapio_semana(obj: dict) -> bool:
                 return False
     return True
 
+# ===========================================================
+# COMUNICAÇÃO COM A API (com retry)
+# ===========================================================
+
 def gerar_com_retry(prompt: str, max_attempts: int = 3, base_backoff: float = 1.0):
-    """Chama o modelo com tentativas automáticas."""
+    """Faz a chamada ao modelo com tentativas automáticas em caso de falha."""
     last_exc = None
     for attempt in range(1, max_attempts + 1):
         try:
@@ -124,8 +131,12 @@ def gerar_com_retry(prompt: str, max_attempts: int = 3, base_backoff: float = 1.
             time.sleep(wait)
     raise last_exc
 
+# ===========================================================
+# PROMPT BUILDER
+# ===========================================================
+
 def montar_prompt_por_ingredientes(ingredientes: list, permitir_extras: bool = False):
-    """Monta o prompt de geração do cardápio."""
+    """Monta o prompt em português, instruindo o modelo a criar um cardápio."""
     ingredientes_texto = ", ".join(ingredientes) if ingredientes else "nenhum"
     extras_text = (
         "Pode usar ingredientes básicos como sal, óleo, alho e cebola se necessário."
@@ -136,49 +147,81 @@ def montar_prompt_por_ingredientes(ingredientes: list, permitir_extras: bool = F
     prompt = (
         "Você é um chef criativo. Usando SOMENTE os ingredientes fornecidos, crie um cardápio semanal "
         "(Segunda a Domingo) com duas refeições por dia: Almoço e Jantar.\n\n"
-        "Formato obrigatório:\n"
+        "Formato de resposta obrigatório:\n"
         "{\n"
         '  "Segunda": [ {"nome": "...", "ingredientes": ["..."], "modo_preparo": "..."}, {"nome": "..."} ],\n'
         '  "Terca": [...], "Quarta": [...], ...\n'
         "}\n\n"
-        f"Ingredientes disponíveis: {ingredientes_texto}.\n"
-        f"{extras_text}\n"
-        "Responda SOMENTE com JSON válido, sem texto adicional."
+        "Regras:\n"
+        " - Cada refeição deve ter nome, lista de ingredientes e breve modo de preparo.\n"
+        " - As receitas devem ser simples, caseiras e variadas.\n"
+        f" - Ingredientes disponíveis: {ingredientes_texto}.\n"
+        f" - {extras_text}\n"
+        " - Responda APENAS com JSON válido, sem texto adicional.\n"
     )
     return prompt
 
 # ===========================================================
-# ROTAS DA API
+# SALVAMENTO DOS RESULTADOS
 # ===========================================================
 
-@app.route("/gerar-cardapio", methods=["POST"])
-def gerar_cardapio():
-    """Endpoint que recebe ingredientes e retorna o cardápio."""
-    dados = request.get_json()
+def salvar_cardapio_json(cardapio_obj, caminho="cardapio_semana/cardapio_final.json"):
+    """Salva o cardápio como JSON bem formatado."""
+    os.makedirs(os.path.dirname(caminho), exist_ok=True)
+    with open(caminho, "w", encoding="utf-8") as f:
+        json.dump(cardapio_obj, f, indent=2, ensure_ascii=False)
+    print(f"✅ Cardápio JSON salvo em: {caminho}")
 
-    if not dados or "ingredientes" not in dados:
-        return jsonify({"erro": "Campo 'ingredientes' é obrigatório."}), 400
+def salvar_cardapio_txt(cardapio_obj):
+    """Cria um arquivo .txt para cada dia com as receitas."""
+    os.makedirs("cardapio_semana", exist_ok=True)
+    for dia, refeicoes in cardapio_obj.items():
+        nome_arquivo = f"cardapio_semana/{dia.lower()}.txt"
+        with open(nome_arquivo, "w", encoding="utf-8") as f:
+            f.write(f"📅 {dia}\n")
+            f.write("=" * 40 + "\n\n")
+            for tipo, refeicao in zip(["Almoço", "Jantar"], refeicoes[:2]):
+                f.write(f"🍽️ {tipo}: {refeicao.get('nome','<sem nome>')}\n")
+                f.write("Ingredientes:\n")
+                for ing in refeicao.get("ingredientes", []):
+                    f.write(f" - {ing}\n")
+                f.write("\nModo de preparo:\n")
+                f.write(f"{refeicao.get('modo_preparo','')}\n\n")
+                f.write("-" * 40 + "\n\n")
+        print(f"✅ Arquivo salvo: {nome_arquivo}")
 
-    ingredientes_raw = dados.get("ingredientes", "")
-    permitir_extras = dados.get("permitir_extras", False)
-    ingredientes = [i.strip() for i in ingredientes_raw.split(",") if i.strip()]
+# ===========================================================
+# FLUXO PRINCIPAL
+# ===========================================================
 
-    if not ingredientes:
-        return jsonify({"erro": "Nenhum ingrediente válido informado."}), 400
+def main():
+    print("=== Gerador de cardápio por ingredientes ===")
+    entrada = input("Digite os ingredientes que você tem em casa (separe por vírgula):\n> ").strip()
+    if not entrada:
+        print("Nenhum ingrediente informado. Encerrando.")
+        return
 
-    prompt = montar_prompt_por_ingredientes(ingredientes, permitir_extras)
-    print(f"🧠 Gerando cardápio com: {ingredientes}")
+    ingredientes = [i.strip() for i in entrada.split(",") if i.strip()]
+    extras = input("Posso usar extras básicos (sal, óleo, alho, cebola)? [s/N]: ").strip().lower().startswith("s")
 
-    try:
-        texto = gerar_com_retry(prompt)
-    except Exception as e:
-        return jsonify({"erro": f"Falha ao gerar resposta da IA: {str(e)}"}), 500
+    prompt = montar_prompt_por_ingredientes(ingredientes, permitir_extras=extras)
 
+    print("\nEnviando dados à API...\n")
+    texto = gerar_com_retry(prompt)
+
+    # Salva resposta bruta da IA
+    os.makedirs("cardapio_semana", exist_ok=True)
+    with open("cardapio_semana/cardapio_raw.txt", "w", encoding="utf-8") as f:
+        f.write(texto)
+    print("✅ Resposta bruta salva em: cardapio_semana/cardapio_raw.txt")
+
+    # Converte para JSON
     data = parse_json_seguro(texto)
     if data is None:
-        return jsonify({"erro": "A resposta da IA não pôde ser convertida em JSON."}), 500
+        print("❌ Não foi possível converter a resposta da IA em JSON válido.")
+        return
 
-    # Normaliza nomes de dias
+    # Normaliza nomes dos dias para português
     dias_map = {
         "monday": "Segunda", "segunda": "Segunda",
         "tuesday": "Terca", "terça": "Terca", "terca": "Terca",
@@ -190,14 +233,16 @@ def gerar_cardapio():
     }
     padronizado = {dias_map.get(k.lower(), k): v for k, v in data.items()}
 
+    # Valida estrutura final
     if not validar_cardapio_semana(padronizado):
-        return jsonify({"erro": "Formato de cardápio inválido."}), 500
+        print("⚠️ Cardápio com formato inesperado. Veja cardapio_raw.txt para depuração.")
+        return
 
-    return jsonify(padronizado), 200
+    # Salva os resultados
+    salvar_cardapio_json(padronizado)
+    salvar_cardapio_txt(padronizado)
 
-# ===========================================================
-# MAIN
-# ===========================================================
+    print("\n🎉 Cardápio gerado com sucesso! Confira a pasta 'cardapio_semana'.")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    main()
