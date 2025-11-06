@@ -31,7 +31,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>🍽️ Gerador de Cardápio Semanal</h1>
+      <h1>🍽️ Gerador de Receitas: IA Receitas 2000</h1>
       <form onSubmit={handleSubmit}>
         <label>
           Ingredientes disponíveis:
